@@ -9,16 +9,41 @@
 	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
 	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6" crossorigin="anonymous"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<script>
+		    // get query list
+		    var _id = $('#_id').val();
+		    var get_result = function() {
+		        $("#warning").text("");
+		        $.ajax({
+		            type: "POST",
+		            url: "get_result",
+		            contentType: "application/json; charset=utf-8;",
+		            data: $('#_id').val(),
+		            // data: JSON.stringify({_id:$('#_id').val()}),
+		            success: function(data) {
+		                console.log(data);
+		            },
+		            error: function() {
+		                $("#warning").text("Something went wrong when getting query list.");
+		            },
+		            dataType: "json"
+
+		        });
+		    }
+		    setInterval(get_result, 3000);
+		    //get_list();
+	</script>
 	
 	
 </head>
 <body>
 	<div class="container-fluid">
 		<h2>Match Meal & Restaurants</h2>
+		<hr>
 		<div class="row">
 			<div class="col-6">
-				<h4>1. Upload the meal photo you want to get</h4>
-				<hr>
+				<h4>1. Upload the meal photo you want to get</h4>				
 				<form class="form-horizontal" action="/upload" method="POST" enctype="multipart/form-data">
 				<!-- <form action="/upload_image" method="POST" enctype="multipart/form-data"> -->
 
@@ -35,7 +60,7 @@
 			    <br>
 			    <div>
 			    	{% if imageId is defined %}
-			    	<img src="{{url_for('get_image', imgId=imageId)}}" style="width: 100%">
+			    	<img src="{{url_for('get_image', imgId=imageId)}}" style="width: 100% ">
 			    	{% endif %}
 			    </div>
 			</div>
@@ -363,7 +388,18 @@
 
 			
 		</div>
-		
+		{% if ans is defined %}		
+            <h3>{{ans}}</h3>
+        {% endif %}
+        
+        <div>
+	    	<h3> </h3>
+	    	<h3> </h3>
+	    </div>
+	    <input type="hidden" id="_id" name="_id" value="{{ _id }}"> 
+        <input type="Name" id="restaurantName" name="name" class="form-control" placeholder="Rrestaurant Name" required autofocus> {{ ans }}
+        <br>
+        <input type="Address" id="restaurantAddress" name="address" class="form-control" placeholder="Rrestaurant Address" required>
 	</div>
 
 </body>
