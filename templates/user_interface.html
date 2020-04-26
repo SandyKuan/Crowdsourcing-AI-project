@@ -5,6 +5,8 @@
 		Meal-Match
 	</title>
 	<meta charset='utf-8'>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
 	<script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
 	<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
@@ -21,8 +23,20 @@
 		            contentType: "application/json; charset=utf-8;",
 		            data: $('#_id').val(),
 		            // data: JSON.stringify({_id:$('#_id').val()}),
-		            success: function(data) {
-		                console.log(data);
+		            success: function(data) {		            				    
+
+		            	for (var i = 0; i < data.length; i++) {
+						   $("#name_"+i).text(data[i][0]);
+						   $("#address_"+i).text(data[i][1]);
+						   var audio = new Audio('static/filling.mp3');
+              		       audio.play();
+		            	   // var j = i+1
+		            	   // alert("Get " + j + " result")	
+						   
+						}
+
+
+		                // console.log(data);
 		            },
 		            error: function() {
 		                $("#warning").text("Something went wrong when getting query list.");
@@ -33,102 +47,174 @@
 		    }
 		    setInterval(get_result, 3000);
 		    //get_list();
+
+
+		    window.pressed = function(){
+			    var a = document.getElementById('image');
+			    if(a.value == "")
+			    {
+			        fileLabel.innerHTML = "Choose image file...";
+			    }
+			    else
+			    {
+			        var theSplit = a.value.split('\\');
+			        fileLabel.innerHTML = theSplit[theSplit.length-1] + " is to be chosen...";
+			    }
+			};
+
+			$("#sub").click(function() {
+			    $('html, body').animate({
+			        scrollTop: $("#ans").offset().top
+			    }, 2000);
+			});
 	</script>
-	
+	<style type="text/css">
+			.button {
+				color: #fff !important;
+				/*text-transform: uppercase;*/
+				text-decoration: none;
+				background: #27496d;
+				padding: 20px;
+				border-radius: 50px;
+				display: inline-block;
+				border: none;
+				transition: all 0.4s ease 0s;
+				/*width: 200px;*/
+				font-size: 24px;
+				width:100%;
+				min-width: 10px;
+				max-width: 180px;
+			}
+			.button:hover {
+				
+				background-color: #60a3bc;
+				cursor:pointer;
+			}
+			table {
+				border-collapse: collapse;
+				width: 90%;
+				color: #c29f9f;
+				}
+				th {
+				background-color: #c29f9f;
+				color: white;
+				text-align: center;
+				font-size: 24px;
+				}
+				tr:nth-child(even) {background-color: #dae1e7}
+				td {
+				    text-align: left;
+				    font-size: 20px;
+				}
+				.bg-image {
+				  /* The image used */
+				  background-image: url("static/background3.jpg");
+				  
+				  /* Add the blur effect */
+				  /*filter: blur(2px);*/
+				  /*-webkit-filter: blur(2px);*/
+				  
+				  /* Full height */
+				  height: 100%; 
+				  
+				  /* Center and scale the image nicely */
+				  background-position: center;
+				  background-repeat: no-repeat;
+				  background-size: cover;
+				}
+
+				/* Position text in the middle of the page/image */
+				.bg-text {
+				  background-color: rgb(0,0,0); /* Fallback color */
+				  background-color: rgba(0,0,0, 0); /* Black w/opacity/see-through */
+				  color: white;
+				  font-weight: bold;
+				  border: 20px double #f4f4f4;
+				  position: absolute;
+				  top: 60%;
+				  left: 50%;
+				  transform: translate(-50%, -50%);
+				  z-index: 2;
+				  width: 70%;
+				  padding: 8px;
+				  text-align: center;
+				  font-size: 2.8rem !important;
+				}
+	</style>
 	
 </head>
 <body>
-	<div class="container-fluid">
-		<h2>Match Meal & Restaurants</h2>
-		<hr>
+	<div class="bg-image" style="font-family:Arial; width: 100%">
+		<img class="d-block mx-auto img-fluid" src="static/background3.jpg" alt="Food" style="font-family:Arial; width: 100%">
+	</div>
+	<div class="bg-text">
+		<h style="margin: 1%;"><span style="color:#60a3bc;"><b>Let's Match <span style="color:#ccafaf;"><I>Meal</I></span> & <span style="color:#ccafaf;"><I>Restaurants</I></span></span></b></h>		
+	</div>
+			
+		
+	
+	<div class="container-fluid" style="font-family:Arial">		
+		<br>
+		<form class="form-horizontal" action="/upload" method="POST" enctype="multipart/form-data">
 		<div class="row">
 			<div class="col-6">
-				<h4>1. Upload the meal photo you want to get</h4>				
-				<form class="form-horizontal" action="/upload" method="POST" enctype="multipart/form-data">
+				<h4 ><span style="color:#27496d;font-weight: bold;">STEP 1:</span> Upload the meal photo you want to get</h4>	
+				<br>
 				<!-- <form action="/upload_image" method="POST" enctype="multipart/form-data"> -->
 
-			        <div class="form-group">
-			          
-			          <div class="custom-file">
-			            <input type="file" class="custom-file-input" name="img" id="image" accept=".gif, .jpg, .png, jpeg">
-			            <label class="custom-file-label" for="image">Choose image file...</label>
+			        <div class="form-group">			          
+			          <div class="custom-file" >
+			            <input type="file" class="custom-file-input" name="img" id="image" accept=".gif, .jpg, .png, jpeg" onchange="pressed()" required>
+			            <label class="custom-file-label" for="image" id="fileLabel">Choose image file...</label>
 			          </div>
 			        </div>
 
 			        <!-- <button type="submit" class="btn btn-primary" id="upload_img">Upload</button>					 -->
 			    
-			    <br>
 			    <div>
+			    	<!-- <img src="static/indexfood9.jpg" style="width: 100%;max-height: 400px" > -->
 			    	{% if imageId is defined %}
-			    	<img src="{{url_for('get_image', imgId=imageId)}}" style="width: 100% ">
+			    	<img src="{{url_for('get_image', imgId=imageId)}}" style="width: 100%; max-height: 400px">
 			    	{% endif %}
 			    </div>
 			</div>
 
-			<div class="col-6">
-				<h4>2. Where are you looking for the restaurant </h4>
+			<div class="col-6" >
+				<h4><span style="color:#27496d;font-weight: bold;">STEP 2:</span> Where are you looking for the restaurant </h4>
+				<br>
 				<!-- <form class="form-horizontal" action="/upload_location" method="POST" enctype="multipart/form-data"> -->
-		            <fieldset>
-		                <!-- Address form -->
-		                 
-		                <!-- full-name input-->
-		                <!-- <div class="control-group">
-		                    <label class="control-label">Full Name</label>
-		                    <div class="controls">
-		                        <input id="full-name" name="full-name" type="text" placeholder="full name"
-		                        class="input-xlarge">
-		                        <p class="help-block"></p>
-		                    </div>
-		                </div> -->
-		                <!-- address-line1 input-->
-		           <!--      <div class="control-group">
-		                    <label class="control-label">Address Line 1</label>
-		                    <div class="controls">
-		                        <input id="address-line1" name="address-line1" type="text" placeholder="address line 1"
-		                        class="input-xlarge">
-		                        <p class="help-block">Street address, P.O. box, company name, c/o</p>
-		                    </div>
-		                </div> -->
-		                <!-- address-line2 input-->
-		          <!--       <div class="control-group">
-		                    <label class="control-label">Address Line 2</label>
-		                    <div class="controls">
-		                        <input id="address-line2" name="address-line2" type="text" placeholder="address line 2"
-		                        class="input-xlarge">
-		                        <p class="help-block">Apartment, suite , unit, building, floor, etc.</p>
-		                    </div>
-		                </div> -->
+		            <fieldset style="margin-left:2%">
 		                <!-- city input-->
 		                <div class="control-group">
-		                    <label class="control-label">City / Town</label>
+		                    <label class="control-label" style="color:#005082;font-weight: bold">City / Town</label>
 		                    <div class="controls">
-		                        <input id="city" name="city" type="text" placeholder="city" class="input-xlarge">
+		                        <input id="city" name="city" type="text" placeholder="city" class="input-xlarge" required>
 		                        <p class="help-block"></p>
 		                    </div>
 		                </div>
 		                <!-- region input-->
 		                <div class="control-group">
-		                    <label class="control-label">State / Province / Region</label>
+		                    <label class="control-label" style="color:#005082;font-weight: bold">State / Province / Region</label>
 		                    <div class="controls">
 		                        <input id="region" name="region" type="text" placeholder="state / province / region"
-		                        class="input-xlarge">
+		                        class="input-xlarge" required>
 		                        <p class="help-block"></p>
 		                    </div>
 		                </div>
 		                <!-- postal-code input-->
 		                <div class="control-group">
-		                    <label class="control-label">Zip / Postal Code</label>
+		                    <label class="control-label" style="color:#005082;font-weight: bold">Zip / Postal Code</label>
 		                    <div class="controls">
 		                        <input id="postal_code" name="postal_code" type="text" placeholder="zip or postal code"
-		                        class="input-xlarge">
+		                        class="input-xlarge" required>
 		                        <p class="help-block"></p>
 		                    </div>
 		                </div>
 		                <!-- country select -->
 		                <div class="control-group">
-		                    <label class="control-label">Country</label>
+		                    <label class="control-label" style="color:#005082;font-weight: bold">Country</label>
 		                    <div class="controls">
-		                        <select id="country" name="country" class="input-xlarge">
+		                        <select id="country" name="country" class="input-xlarge" required>
 		                            <option value="" selected="selected">(please select a country)</option>
 									   <option value="Afganistan">Afghanistan</option>
 									   <option value="Albania">Albania</option>
@@ -380,26 +466,47 @@
 		                    </div>
 		                </div>
 		                <br>
-		                <button type="submit" class="btn btn-primary" style="margin-left : 80%">Submit</button>
-		            </fieldset>
-		        </form>
-
+		                <button type="submit" class="button" id = "sub" style="margin-left: 60%;">GO Match!</button>
+		            </fieldset>		        
 			</div>
-
-			
 		</div>
-		{% if ans is defined %}		
-            <h3>{{ans}}</h3>
-        {% endif %}
-        
-        <div>
-	    	<h3> </h3>
-	    	<h3> </h3>
-	    </div>
-	    <input type="hidden" id="_id" name="_id" value="{{ _id }}"> 
-        <input type="Name" id="restaurantName" name="name" class="form-control" placeholder="Rrestaurant Name" required autofocus> {{ ans }}
-        <br>
-        <input type="Address" id="restaurantAddress" name="address" class="form-control" placeholder="Rrestaurant Address" required>
+		</form>
+	</div>
+			
+	<div class="container-fluid" id = "ans" style="font-family:Arial";>
+			
+		<h3 style="margin: 1.5%; color: #27496d; font-weight:bold;">Please wait... and find below the response to your queries.</h3>
+			
+			<table class="table" style="table-layout: auto;">
+                <tr>
+                    <th scope="col">Restaurant Name</th>
+                    <th scope="col">Restaurant Address</th>
+                </tr>
+                <tbody>                
+                    <tr>
+                        <td id="name_0"></td>
+                        <td id="address_0"></td>  
+                    </tr>   
+                    <tr>
+                        <td id="name_1"></td>
+                        <td id="address_1"></td>  
+                    </tr>   
+                    <tr>
+                        <td id="name_2"></td>
+                        <td id="address_2"></td>  
+                    </tr>          
+                </tbody>
+            </table>
+<!-- 	        <h3 id="name_0"></h3>
+			<h3 id="address_0"></h3> 
+			<h3 id="name_1"></h3>
+			<h3 id="address_1"></h3>
+			<h3 id="name_2"></h3>
+			<h3 id="address_2"></h3>   -->  
+
+	        <!-- store id and hidden -->
+		    <input type="hidden" id="_id" name="_id" value="{{ _id }}"> 
+			
 	</div>
 
 </body>
