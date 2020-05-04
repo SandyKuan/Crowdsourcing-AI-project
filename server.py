@@ -18,16 +18,22 @@ db = client["MealMatch"]
 fs = gridfs.GridFS(db)
 ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
 
-UPLOAD_FOLDER = 'D:/Sandy/Course/2nd semester/IST 402_Crowdsourcing and Crowd AI/Assignments/Final project/Project/static'
+UPLOAD_FOLDER = 'html/static'
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+
+def get_data():
+    data = request.get_data().decode("utf-8")
+    # data = request.get_data()
+    # data = json.loads(str(request.data, encoding = "utf-8"))
+    return data
 
 @app.route("/")
 def index():
-    return render_template("user_interface.html")
+    return render_template("index.html")
 
-def allowed_file(filename):
-    return '.' in filename and \
-           filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+# def allowed_file(filename):
+#     return '.' in filename and \
+#            filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
 @app.route("/upload", methods=["POST","GET"])
 def upload_information():
@@ -55,8 +61,9 @@ def upload_information():
     name = '%s.jpg' % fields
     with open(os.path.join(app.config['UPLOAD_FOLDER'], name), 'wb') as outfile:
       outfile.write(res)
-
-    return render_template("user_interface.html",imageId=fields)
+    _id = ObjectId()
+    # print(_id)
+    return render_template("user_interface.html",imageId=fields, _id=fields)
 
 @app.route('/get_image/<imgId>', methods = ['GET'])
 def get_image(imgId):
@@ -70,24 +77,49 @@ def get_image(imgId):
     response.headers.set('Content-Disposition', 'attachment', filename='%s.jpg' % imgId)
     return response
 
+@app.route("/questions", methods = ['GET'])
+def questions():
+    try:
+        questions = db.information.find({"status":"finish"})
+        return render_template('user_interface.html', questions = questions)
+    except Exception as e:
+        return dumps({'error' : str(e)})
+
+@app.route("/user_interface", methods=["POST","GET"])
+def user_interface():
+    return render_template("user_interface.html")
 
 @app.route("/worker_1")
 def worker_interface():
     return render_template("worker_1.html")
+    
 
 
-# # @app.route("/get_list", methods=["POST"])
-# # def get_list():
-# #     res = [
-# #         {
-# #             "status":r["status"], 
-# #             "image":r["image"], 
-# #             "id":str(r["_id"]),
-# #             "results":r.get("results", []),
-# #         } 
-# #         for r in mydb.query.find({})
-# #     ]
-# #     return json.dumps({"result":res})
+@app.route("/get_result", methods=["POST","GET"])
+def get_result():
+    data = get_data()
+    # print(data)
+    res = db.information.find_one({'fields':ObjectId(data)})
+    # print(res)    
+    results = res["results"]
+    ans = []
+    for r in results:
+        name = r["Name"]
+        address = r["Address"]
+        ans.append([name, address])
+
+
+    # res = [
+    #     {
+    #         "status":r["status"], 
+    #         # "image":r["image"], 
+    #         "id":str(r["_id"]),
+    #         "results":r.get("results", []),
+    #     } 
+    #     for r in db.information.find({})
+    # ]
+    return json.dumps(ans)
+
 
 if __name__ == "__main__":
     app.run(debug=True)

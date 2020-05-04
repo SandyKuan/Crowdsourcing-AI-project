@@ -11,7 +11,7 @@ question_pattern = re.compile("<QuestionIdentifier>(?P<q_name>.*?)</QuestionIden
 answer_pattern = re.compile("<FreeText>(?P<q_name>.*?)</FreeText>")
 
 def get_key():
-    with open("D:/Sandy/Course/2nd semester/IST 402_Crowdsourcing and Crowd AI/Assignments/Final projectrootkey.csv", "r") as infile:
+    with open("D:/Sandy/Course/2nd semester/IST 402_Crowdsourcing and Crowd AI/Assignments/Final project/rootkey.csv", "r") as infile:
         data = [line.strip().split("=")[1] for line in infile]
         access_key = data[0]
         secret_key = data[1]
